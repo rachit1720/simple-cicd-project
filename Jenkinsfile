@@ -50,5 +50,20 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to EC2') {
+            steps {
+                sshagent(['ec2-ssh']) {
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no \
+                        ec2-user@13.204.64.166 "
+                            cd /home/ec2-user/simple-cicd-deploy &&
+                            docker compose pull &&
+                            docker compose up -d
+                        "
+                    '''
+                }
+            }
+        }
     }
 }
